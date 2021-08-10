@@ -13,7 +13,7 @@ namespace Property.API.Controllers
     /// <summary>
     /// Resources dedicated to data exchanges across system boundaries.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("api/dataexchange")]
     [ApiController]
     [Produces("application/json")]
     public class DataExchangeController : ControllerBase
@@ -31,7 +31,7 @@ namespace Property.API.Controllers
         /// Import a json file containing properties.
         /// </summary>
         [HttpPost]
-        [Route("api/dataExchange/property/import")]
+        [Route("property/import")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> PropertyImport([BindRequired] IFormFile propertyFile, CancellationToken token)
@@ -55,7 +55,7 @@ namespace Property.API.Controllers
         /// Import a json file containing management companies.
         /// </summary>
         [HttpPost]
-        [Route("api/dataExchange/management/import")]
+        [Route("management/import")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> ManagementImport([BindRequired] IFormFile managementFile, CancellationToken token)

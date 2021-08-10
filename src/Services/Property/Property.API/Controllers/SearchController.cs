@@ -8,7 +8,6 @@ namespace Property.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class SearchController : ControllerBase
     {
         private readonly ISearchProvider _searchProvider;
@@ -20,7 +19,7 @@ namespace Property.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery] string q,
                                                      [FromQuery] string market,
-                                                     [FromQuery] int limit = 15)
+                                                     [FromQuery] int limit = 25)
         {
             var searchResults = await _searchProvider.SearchEntities(q, market, limit);
             return Ok(searchResults.ToList());

@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{45
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.API", "src\Services\Identity\Identity.API\Identity.API.csproj", "{4142D698-014D-44E0-A554-96987C1162C2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartApartmentEnterprise.SPA", "src\Web\SmartApartmentEnterprise.SPA\SmartApartmentEnterprise.SPA.csproj", "{5701E655-119A-46B6-A689-BF2E3BC338B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{4142D698-014D-44E0-A554-96987C1162C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4142D698-014D-44E0-A554-96987C1162C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4142D698-014D-44E0-A554-96987C1162C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5701E655-119A-46B6-A689-BF2E3BC338B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5701E655-119A-46B6-A689-BF2E3BC338B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5701E655-119A-46B6-A689-BF2E3BC338B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5701E655-119A-46B6-A689-BF2E3BC338B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +48,7 @@ Global
 		{6E41CB77-D628-486A-9C42-82D94E85E74E} = {7285FE78-1530-475E-8989-4AE78793F1D8}
 		{45C04629-1F68-42A0-86AA-BE4EAD3FDE59} = {7285FE78-1530-475E-8989-4AE78793F1D8}
 		{4142D698-014D-44E0-A554-96987C1162C2} = {45C04629-1F68-42A0-86AA-BE4EAD3FDE59}
+		{5701E655-119A-46B6-A689-BF2E3BC338B8} = {01CF5DF6-6977-41F1-8F0B-2C64AA5A42D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7C74F97D-27CC-47A6-B3E0-1BBFB77A6E2E}
