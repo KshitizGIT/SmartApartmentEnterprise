@@ -1,3 +1,8 @@
 .form-control {
     border-width: 2px;
 }
+
+::ng-deep.dropdown-menu.show {
+max-height: 70vh !important;
+overflow-y: auto !important;
+}

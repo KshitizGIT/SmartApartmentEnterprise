@@ -32,7 +32,8 @@ namespace Property.API
             services.AddCors(options => {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                     builder => {
-                        builder.WithOrigins("https://localhost:44358");
+                        builder.WithOrigins("https://localhost:44358")
+                        .AllowAnyHeader(); 
                     });
             });
 

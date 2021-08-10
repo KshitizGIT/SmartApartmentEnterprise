@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Property.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class SearchController : ControllerBase
     {

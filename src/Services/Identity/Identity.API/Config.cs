@@ -41,17 +41,18 @@ namespace Identity.API
                 // interactive client using code flow + pkce
                 new Client
                 {
-                    ClientId = "interactive",
-                    ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
-
-                    AllowedGrantTypes = GrantTypes.ClientCredentials ,
-
-                    RedirectUris = { "https://localhost:5001/signin-oidc" },
-                    FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
-
-                    AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "scope2" }
+                    ClientId = "angular-client",
+                    ClientName = "Angular Client",
+                    AllowedGrantTypes = GrantTypes.Code ,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    AllowedScopes = { "openid", "profile", "Property.API" },
+                    AccessTokenLifetime = 600,
+                    RequireConsent = false,
+                    AllowAccessTokensViaBrowser = true,
+                    RedirectUris = new List<string>{"https://localhost:44358/signin-callback", "https://localhost:44358/assets/silent-callback.html" },
+                    AllowedCorsOrigins = {"https://localhost:44358" },
+                    PostLogoutRedirectUris = new List<string>{ "https://localhost:44358/signout-callback" }
                 },
             };
     }

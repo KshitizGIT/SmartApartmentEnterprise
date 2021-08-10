@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { SearchResult } from './model/searchresult'
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { from, Observable, of } from 'rxjs';
+import { SearchResult } from '../../model/searchresult'
+import { AuthService } from './auth.service';
 
 const URL = 'https://localhost:44309/api/search';
 
@@ -10,15 +11,14 @@ const URL = 'https://localhost:44309/api/search';
 })
 export class SearchService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private auth: AuthService) {
   }
 
   search(term: string, market: string): Observable<SearchResult[]> {
-    if (term === '')
-      return of([])
     let url = URL + '?q=' + term;
-    if (market)
+    if (market) {
       url = url + '&market=' + market;
+    }
     return this.http.get<SearchResult[]>(url);
   }
 }
