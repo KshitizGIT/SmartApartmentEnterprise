@@ -4,13 +4,12 @@
       <img src="/{{r.type.toLowerCase()}}.png" height="64" width="64" />
     </div>
     <div class="col-10">
-      <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight> <span *ngIf="r.formerName"> (formerly {{r.formerName}})</span>
+      <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight> <span *ngIf="r.formerName"> (formerly <ngb-highlight [result]="r.formerName" [term]="t"></ngb-highlight>)</span>
       <div>
-        {{r.market}} <span *ngIf="r.city"> ({{r.city}})</span>
+        {{r.market}} <span *ngIf="r.city"> (<ngb-highlight [result]="r.city" [term]="t"></ngb-highlight>)</span>
       </div>
       <div *ngIf="r.streetAddress">
-        Street Address: {{r.streetAddress}}
-      </div>
+        Street Address:  <ngb-highlight [result]="r.streetAddress" [term]="t"></ngb-highlight>      </div>
     </div>
   </div>
 </ng-template>

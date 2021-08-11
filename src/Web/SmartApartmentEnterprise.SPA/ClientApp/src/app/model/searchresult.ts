@@ -7,5 +7,4 @@ export interface SearchResult {
   city: string,
   latitude:  number
   longitude: number
-
 }
