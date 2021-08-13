@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using PropertyManagement.API.HealthCheck;
 using PropertyManagement.API.Indexing;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace PropertyManagement.API
@@ -36,7 +37,7 @@ namespace PropertyManagement.API
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:44358")
+                        builder.WithOrigins(Configuration["WEBAPP_URL"])
                         .AllowAnyHeader();
                     });
             });
@@ -44,7 +45,8 @@ namespace PropertyManagement.API
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:5001";
+                    options.Authority = Configuration["AUTH_URL"];
+                    options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateAudience = false
@@ -56,7 +58,7 @@ namespace PropertyManagement.API
                 option.JsonSerializerOptions
                 .DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
-             });
+            });
 
             services.AddSwaggerGen(c =>
             {
@@ -69,8 +71,8 @@ namespace PropertyManagement.API
                     {
                         ClientCredentials = new OpenApiOAuthFlow()
                         {
-                            AuthorizationUrl = new Uri("https://localhost:5001/connect/authorize"),
-                            TokenUrl = new Uri("https://localhost:5001/connect/token"),
+                            AuthorizationUrl = new Uri("http://localhost:500/connect/authorize"),
+                            TokenUrl = new Uri("http://localhost:5000/connect/token"),
                             Scopes = new Dictionary<string, string> {
                                 { "Property.API", "Access Property APIs" },
                                 }
@@ -88,6 +90,10 @@ namespace PropertyManagement.API
 
             services.AddSmartApartmentServices(Configuration);
             services.AddMediatR(typeof(Startup));
+            services.AddHealthChecks()
+                .AddCheck("elastic-search-check", new ElasticSearchHealthCheck(),
+                HealthStatus.Unhealthy,
+                tags: new string[] { "elasticsearch" });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -106,6 +112,7 @@ namespace PropertyManagement.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/hc");
             });
 
             if (env.IsDevelopment())

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace PropertyManagement.API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
     [ApiController]
+    [Authorize]
     public class SearchController : ControllerBase
     {
         private readonly ISearchProvider _searchProvider;

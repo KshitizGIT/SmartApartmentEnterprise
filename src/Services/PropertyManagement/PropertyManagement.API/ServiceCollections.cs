@@ -15,7 +15,7 @@ namespace PropertyManagement.API
     {
         public static IServiceCollection AddSmartApartmentServices(this IServiceCollection collection, IConfiguration configuration)
         {
-            var settings = new ConnectionSettings(new System.Uri("http://localhost:9200")).
+            var settings = new ConnectionSettings(new System.Uri($"{configuration["ELASTICSEARCH_URL"]}")).
                 EnableDebugMode().
                 DefaultIndex("smart-apartment-search-index");
 

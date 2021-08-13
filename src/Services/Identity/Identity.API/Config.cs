@@ -3,6 +3,7 @@
 
 
 using IdentityServer4.Models;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
 namespace Identity.API
@@ -22,7 +23,7 @@ namespace Identity.API
                 new ApiScope("Property.API"),
             };
 
-        public static IEnumerable<Client> Clients =>
+        public static IEnumerable<Client> Clients(IConfiguration config) =>
             new Client[]
             {
                 // m2m client credentials flow client
@@ -33,9 +34,9 @@ namespace Identity.API
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     AllowAccessTokensViaBrowser = true,
                     ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
-                    RedirectUris = {"https://localhost:44309/swagger/oauth2-redirect.html"},
+                    RedirectUris = {$"{config["PROPERTYMANAGEMENT_URL"]}/swagger/oauth2-redirect.html"},
                     AllowedScopes = { "Property.API" } ,
-                    AllowedCorsOrigins = {"https://localhost:44309" }
+                    AllowedCorsOrigins = {$"{config["PROPERTYMANAGEMENT_URL"]}", $"{config["PROPERTYMANAGEMENTSWAGGERCLIENT"]}" }
                 },
 
                 // interactive client using code flow + pkce
@@ -50,9 +51,9 @@ namespace Identity.API
                     AccessTokenLifetime = 600,
                     RequireConsent = false,
                     AllowAccessTokensViaBrowser = true,
-                    RedirectUris = new List<string>{"https://localhost:44358/signin-callback", "https://localhost:44358/assets/silent-callback.html" },
-                    AllowedCorsOrigins = {"https://localhost:44358" },
-                    PostLogoutRedirectUris = new List<string>{ "https://localhost:44358/signout-callback" }
+                    RedirectUris = new List<string>{$"{config["WEBAPP_URL"]}/signin-callback", $"{config["WEBAPP_URL"]}/assets/silent-callback.html" },
+                    AllowedCorsOrigins = {$"{config["WEBAPP_URL"]}" },
+                    PostLogoutRedirectUris = new List<string>{ $"{config["WEBAPP_URL"]}/signout-callback" }
                 },
             };
     }
