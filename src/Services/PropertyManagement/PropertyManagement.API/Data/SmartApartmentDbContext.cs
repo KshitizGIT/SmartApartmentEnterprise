@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PropertyManagement.API.Models;
+using PropertyManagement.Infrastructure.Models;
 
 namespace PropertyManagement.API.Data
 {

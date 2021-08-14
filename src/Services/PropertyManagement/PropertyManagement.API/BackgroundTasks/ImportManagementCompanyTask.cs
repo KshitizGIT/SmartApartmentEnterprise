@@ -1,7 +1,7 @@
 ﻿using PropertyManagement.API.DTOs;
-using PropertyManagement.API.Events;
 using PropertyManagement.API.Extensions;
-using PropertyManagement.API.Models;
+using PropertyManagement.Infrastructure.Events;
+using PropertyManagement.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

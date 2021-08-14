@@ -1,6 +1,7 @@
-﻿using PropertyManagement.API.Models;
+﻿using PropertyManagement.Infrastructure.Models;
 using System;
 using System.Threading.Tasks;
+using TaskStatus = PropertyManagement.Infrastructure.Models.TaskStatus;
 
 namespace PropertyManagement.API.BackgroundTasks
 {
@@ -46,7 +47,7 @@ namespace PropertyManagement.API.BackgroundTasks
             {
                 Created = DateTime.Now,
                 Id = Id,
-                Status = Models.TaskStatus.Pending,
+                Status = TaskStatus.Pending,
                 Type = this.GetType().FullName,
                 Updated = DateTime.Now
             };
@@ -58,28 +59,28 @@ namespace PropertyManagement.API.BackgroundTasks
         private async Task FlagAsFailure(ImportTaskContext context, string reason)
         {
             TaskDetails.Message = reason;
-            TaskDetails.Status = Models.TaskStatus.Failure;
+            TaskDetails.Status = TaskStatus.Failure;
             TaskDetails.Updated = DateTime.Now;
             await context.DbContext.SaveChangesAsync();
         }
         private async Task MarkAsSuccess(ImportTaskContext context)
         {
             TaskDetails.Message = "Import task completed successfully.";
-            TaskDetails.Status = Models.TaskStatus.Success;
+            TaskDetails.Status = TaskStatus.Success;
             TaskDetails.Updated = DateTime.Now;
             await context.DbContext.SaveChangesAsync();
         }
 
         private async Task MarkAsInProgress(ImportTaskContext context)
         {
-            TaskDetails.Status = Models.TaskStatus.Progress;
+            TaskDetails.Status = TaskStatus.Progress;
             TaskDetails.Updated = DateTime.Now;
             await context.DbContext.SaveChangesAsync();
         }
 
         private async Task MarkAsPending(ImportTaskContext context)
         {
-            TaskDetails.Status = Models.TaskStatus.Pending;
+            TaskDetails.Status = TaskStatus.Pending;
             TaskDetails.Updated = DateTime.Now;
             await context.DbContext.SaveChangesAsync();
         }

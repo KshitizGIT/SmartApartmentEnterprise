@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using PropertyManagement.API.Data;
 using PropertyManagement.API.Extensions;
-using PropertyManagement.API.HealthCheck;
+using PropertyManagement.SearchProviders.ElasticSearch;
 using System;
 using System.Text.Json.Serialization;
 
@@ -58,6 +57,8 @@ namespace PropertyManagement.API
             });
 
             services.AddSwagger();
+
+            services.AddMediatR(typeof(Startup));
             services.AddTaskRunnerHost(t =>
                         t.ThreadCount = Convert.ToInt32(Configuration["TaskRunnerThreadCount"] ?? "2")
                         );
@@ -70,13 +71,6 @@ namespace PropertyManagement.API
             services.AddDbContext<SmartApartmentDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
             );
-
-            services.AddMediatR(typeof(Startup));
-
-            services.AddHealthChecks()
-                .AddCheck("elastic-search-check", new ElasticSearchHealthCheck(),
-                HealthStatus.Unhealthy,
-                tags: new string[] { "elasticsearch" });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

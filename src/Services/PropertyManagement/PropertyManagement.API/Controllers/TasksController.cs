@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PropertyManagement.API.Data;
-using PropertyManagement.API.Models;
 using PropertyManagement.API.Responses;
+using PropertyManagement.Infrastructure.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

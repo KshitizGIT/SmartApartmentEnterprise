@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PropertyManagement.API.Search;
+using PropertyManagement.Infrastructure;
 using System.Linq;
 using System.Threading.Tasks;
 

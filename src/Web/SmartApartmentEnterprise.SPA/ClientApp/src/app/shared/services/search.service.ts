@@ -19,6 +19,8 @@ export class SearchService {
     if (market) {
       url = url + '&market=' + market;
     }
+    // default limit 6 for autocomplete
+    url = url + '&limit=6';
     return this.http.get<SearchResult[]>(url);
   }
 }

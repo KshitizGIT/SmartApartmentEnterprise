@@ -1,7 +1,7 @@
 ﻿using PropertyManagement.API.DTOs;
-using PropertyManagement.API.Events;
 using PropertyManagement.API.Extensions;
-using PropertyManagement.API.Models;
+using PropertyManagement.Infrastructure.Events;
+using PropertyManagement.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,12 +57,12 @@ namespace PropertyManagement.API.BackgroundTasks
             var recordsToCreate = propertyExistenceHash.Where(s => !s.Value).Select(r => r.Key).ToList();
             await context.DbContext.Properties.AddRangeAsync(recordsToCreate);
 
-            List<Models.Property> updatedEntries = new List<Models.Property>();
+            List<Property> updatedEntries = new List<Property>();
 
             if (context.DbContext.ChangeTracker.HasChanges())
             {
                 // Fetch changed entries from ChangeTracker
-                updatedEntries = context.DbContext.ChangeTracker.Entries<Models.Property>()
+                updatedEntries = context.DbContext.ChangeTracker.Entries<Property>()
                    .Where(entry => entry.State == Microsoft.EntityFrameworkCore.EntityState.Modified)
                    .Select(s => s.Entity)
                    .ToList();

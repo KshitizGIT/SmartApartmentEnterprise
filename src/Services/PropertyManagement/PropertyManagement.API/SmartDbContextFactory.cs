@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using PropertyManagement.API.Data;
-using System;
 
 namespace PropertyManagement.API
 {
