@@ -58,7 +58,6 @@ namespace PropertyManagement.API
 
             services.AddSwagger();
 
-            services.AddMediatR(typeof(Startup));
             services.AddTaskRunnerHost(t =>
                         t.ThreadCount = Convert.ToInt32(Configuration["TaskRunnerThreadCount"] ?? "2")
                         );

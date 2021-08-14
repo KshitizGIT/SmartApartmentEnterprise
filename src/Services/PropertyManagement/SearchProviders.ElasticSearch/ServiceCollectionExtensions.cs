@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Nest;
 using PropertyManagement.Infrastructure;
@@ -23,6 +24,7 @@ namespace PropertyManagement.SearchProviders.ElasticSearch
             collection.AddHealthChecks().AddCheck("elastic-search-check", new ElasticSearchHealthCheck(client),
                 HealthStatus.Unhealthy,
                 tags: new string[] { "elasticsearch" });
+            collection.AddMediatR(typeof(ServiceCollectionExtensions));
             return collection;
         }
         private static void CreateSearchIndex(IElasticClient client, string index)
