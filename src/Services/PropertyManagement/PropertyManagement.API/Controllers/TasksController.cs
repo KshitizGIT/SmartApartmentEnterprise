@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PropertyManagement.API.Data;
+using PropertyManagement.API.Models;
 using PropertyManagement.API.Responses;
 using System;
 using System.Threading;
@@ -9,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace PropertyManagement.API.Controllers
 {
+    /// <summary>
+    /// API's related to query task status.
+    /// </summary>
     [Authorize]
     [Route("api/tasks")]
     [ApiController]
@@ -22,7 +26,8 @@ namespace PropertyManagement.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TaskDetails))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Index([FromQuery] Guid taskId, CancellationToken token)
         {
             try

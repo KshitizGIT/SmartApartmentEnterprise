@@ -18,8 +18,11 @@ COPY ["docker-compose.dcproj", "docker-compose.dcproj"]
 RUN dotnet restore "SmartApartmentEnterprise.sln"
 COPY . .
 WORKDIR /src/Services/PropertyManagement/PropertyManagement.API/
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet ef database update
 RUN dotnet publish --no-restore -c Release -o /app
-
+RUN mv SmartApartmentDb.db /app/
 FROM build AS publish
 
 FROM base AS final

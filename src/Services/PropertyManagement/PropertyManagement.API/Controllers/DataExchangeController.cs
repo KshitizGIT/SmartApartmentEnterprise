@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PropertyManagement.API.BackgroundTasks;
 using PropertyManagement.API.Data;
 using PropertyManagement.API.Responses;
-using PropertyManagement.API.Search;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,15 +20,12 @@ namespace PropertyManagement.API.Controllers
     [Authorize]
     public class DataExchangeController : ControllerBase
     {
-        private readonly ISearchProvider _searchProvider;
         private readonly IPropertyImportBackgroundTaskQueue _taskQueue;
         private readonly SmartApartmentDbContext _context;
 
-        public DataExchangeController(ISearchProvider provider,
-            IPropertyImportBackgroundTaskQueue taskQueue,
+        public DataExchangeController(IPropertyImportBackgroundTaskQueue taskQueue,
             SmartApartmentDbContext context)
         {
-            _searchProvider = provider;
             _taskQueue = taskQueue;
             _context = context;
         }
@@ -39,7 +35,7 @@ namespace PropertyManagement.API.Controllers
         /// </summary>
         [HttpPost]
         [Route("property/import")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessResponse))]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(TaskCreatedResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> PropertyImport([BindRequired] IFormFile propertyFile, CancellationToken token)
         {
@@ -52,13 +48,21 @@ namespace PropertyManagement.API.Controllers
             var filePath = Path.GetTempFileName();
             using var fileStream = System.IO.File.Create(filePath);
             await propertyFile.CopyToAsync(fileStream);
-            var task = new ImportPropertyTask(filePath);
 
+
+            // Spinning up a background task for long running import
+            var task = new ImportPropertyTask(filePath);
             await _context.TaskDetails.AddAsync(task.TaskDetails, token);
             await _context.SaveChangesAsync(token);
-
+            //Queue the task
             await _taskQueue.QueueBackgroundWorkItemAsync(task);
-            return Accepted(Url.Action("Index", "Tasks", new { taskId = task.Id }));
+
+            var statusUrl = Url.Action("Index", "Tasks", new { taskId = task.Id });
+            return Accepted(statusUrl,
+                new TaskCreatedResponse(task.Id)
+                {
+                    Message = $"Property import process initiated. Check progress at {statusUrl}",
+                });
 
         }
 
@@ -80,13 +84,19 @@ namespace PropertyManagement.API.Controllers
             using var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
             await managementFile.CopyToAsync(fileStream);
 
-            // Spinning up a background task to import management companies
+            // Spinning up a background task for long running import
             var task = new ImportManagementCompanyTask(filePath);
             await _context.TaskDetails.AddAsync(task.TaskDetails, token);
             await _context.SaveChangesAsync();
 
+            // Queue the task
             await _taskQueue.QueueBackgroundWorkItemAsync(task);
-            return Accepted(Url.Action("Index", "Tasks", new { taskId = task.Id }));
+            var statusUrl = Url.Action("Index", "Tasks", new { taskId = task.Id });
+            return Accepted(statusUrl,
+                new TaskCreatedResponse(task.Id)
+                {
+                    Message = "Management company import process initiated. Check progress using tasks api.",
+                });
         }
 
     }

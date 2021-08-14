@@ -1,5 +1,4 @@
 ﻿using Nest;
-using PropertyManagement.API.Indexing;
 using PropertyManagement.API.Search;
 using PropertyManagement.Models;
 using System.Collections.Generic;
@@ -8,20 +7,18 @@ using System.Threading.Tasks;
 
 namespace PropertyManagement.API.Providers.ElasticSearch
 {
-    public class ElasticSearchProvider : ISearchProvider
+    public class ElasticSearchService : ISearchService
     {
         private readonly IElasticClient _elasticClient;
-        public ElasticSearchProvider(IElasticClient client, ISearchIndexer indexer)
+        public ElasticSearchService(IElasticClient client)
         {
             _elasticClient = client;
-            Indexer = indexer;
         }
 
-        public ISearchIndexer Indexer { get; private set; }
 
         public async Task<IEnumerable<SearchResult>> SearchEntities(string searchString, string market, int limit)
         {
-            var result = await _elasticClient.SearchAsync<SearchResult>(s => s.Index(Indexer.IndexName).Size(limit).
+            var result = await _elasticClient.SearchAsync<SearchResult>(s => s.Size(limit).
                                    Query(q => q.Bool(b => b.Must(m => m.SimpleQueryString(q => q.Query(searchString)))
                                              .Filter(f => f.Match(m => m.Field(fe => fe.Market).Query(market)
                                      )))));

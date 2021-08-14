@@ -1,12 +1,13 @@
 version: '3.4'
 
 services:
-  elasticsearch:
-    environment:
-      - discovery.type=single-node
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+  #elasticsearch:
+  #  image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+  #  environment:
+  #    - discovery.type=single-node
+  #  ports:
+  #    - "9200:9200"
+  #    - "9300:9300"
   smartapartmententerprise:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -22,7 +23,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - AUTH_URL=http://host.docker.internal:5000
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_URL=https://search-smart-apartment-enterprise-evh576by5resytc6aipt7x6ure.us-east-1.es.amazonaws.com
       - WEBAPP_URL=https://localhost:44358
     ports:
       - "80"
@@ -30,6 +31,8 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    #depends_on:
+    #    - elasticsearch
 
   identity:
     environment:

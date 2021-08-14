@@ -11,18 +11,18 @@ namespace PropertyManagement.API.Controllers
     [Authorize]
     public class SearchController : ControllerBase
     {
-        private readonly ISearchProvider _searchProvider;
+        private readonly ISearchService _searchService;
 
-        public SearchController(ISearchProvider searchProvider)
+        public SearchController(ISearchService searchService)
         {
-            _searchProvider = searchProvider;
+            _searchService = searchService;
         }
         [HttpGet]
         public async Task<IActionResult> Search([FromQuery] string q,
                                                      [FromQuery] string market,
                                                      [FromQuery] int limit = 25)
         {
-            var searchResults = await _searchProvider.SearchEntities(q, market, limit);
+            var searchResults = await _searchService.SearchEntities(q, market, limit);
             return Ok(searchResults.ToList());
         }
 

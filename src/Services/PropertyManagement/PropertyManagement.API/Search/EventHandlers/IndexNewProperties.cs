@@ -1,7 +1,7 @@
 ﻿using MediatR;
+using Nest;
 using PropertyManagement.API.Events;
 using PropertyManagement.API.Extensions;
-using PropertyManagement.API.Indexing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,17 +10,17 @@ namespace PropertyManagement.API.EventHandlers
 {
     public class IndexNewProperties : AsyncRequestHandler<PropertiesCreatedEvent>
     {
-        private readonly ISearchIndexer _indexer;
+        private readonly IElasticClient _client;
 
-        public IndexNewProperties(ISearchIndexer indexer)
+        public IndexNewProperties(IElasticClient client)
         {
-            _indexer = indexer;
+            _client = client;
         }
 
         protected async override Task Handle(PropertiesCreatedEvent request, CancellationToken cancellationToken)
         {
             var searchObjects = request.Properties.Select(s => s.ToSearchResult());
-            await _indexer.IndexManyAsync(searchObjects);
+            await _client.IndexManyAsync(searchObjects);
         }
     }
 }

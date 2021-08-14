@@ -1,19 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using PropertyManagement.API.Data;
+using PropertyManagement.API.Extensions;
 using PropertyManagement.API.HealthCheck;
-using PropertyManagement.API.Indexing;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json.Serialization;
 
 namespace PropertyManagement.API
@@ -60,36 +57,22 @@ namespace PropertyManagement.API
                 option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
             });
 
-            services.AddSwaggerGen(c =>
+            services.AddSwagger();
+            services.AddTaskRunnerHost(t =>
+                        t.ThreadCount = Convert.ToInt32(Configuration["TaskRunnerThreadCount"] ?? "2")
+                        );
+
+            services.AddElasticSearch(s =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Property.API", Version = "v1" });
-
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.OAuth2,
-                    Flows = new OpenApiOAuthFlows()
-                    {
-                        ClientCredentials = new OpenApiOAuthFlow()
-                        {
-                            AuthorizationUrl = new Uri("http://localhost:500/connect/authorize"),
-                            TokenUrl = new Uri("http://localhost:5000/connect/token"),
-                            Scopes = new Dictionary<string, string> {
-                                { "Property.API", "Access Property APIs" },
-                                }
-                        }
-                    }
-                });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement { { new OpenApiSecurityScheme {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
-                }, new[] {"Property.API"} } });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+                s.EndpointUrl = Configuration["ELASTICSEARCH_URL"];
+                s.SearchIndexName = "smart-apartment-search-index";
             });
+            services.AddDbContext<SmartApartmentDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
+            );
 
-            services.AddSmartApartmentServices(Configuration);
             services.AddMediatR(typeof(Startup));
+
             services.AddHealthChecks()
                 .AddCheck("elastic-search-check", new ElasticSearchHealthCheck(),
                 HealthStatus.Unhealthy,
@@ -97,7 +80,7 @@ namespace PropertyManagement.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IEnumerable<ISearchIndexer> handler)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
             app.UseHttpsRedirection();
@@ -126,7 +109,6 @@ namespace PropertyManagement.API
                     c.OAuthClientSecret("511536EF-F270-4058-80CA-1C89C192F69A");
                 });
             }
-            handler.ToList().ForEach(c => c.BuildIndexAsync().Wait());
         }
     }
 }

@@ -1,9 +1,6 @@
 version: '3.4'
 
 services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
-
   smartapartmententerprise:
     image: ${DOCKER_REGISTRY-}smartapartmententerprisespa
     build:
@@ -17,8 +14,6 @@ services:
     build:
       context: .
       dockerfile: Services/PropertyManagement/PropertyManagement.API/Dockerfile
-    depends_on:
-        - elasticsearch
 
   identity:
     image: ${DOCKER_REGISTRY-}identityapi

@@ -19,7 +19,11 @@ RUN dotnet restore "SmartApartmentEnterprise.sln"
 COPY . .
 
 WORKDIR "/src/Services/Identity/Identity.API"
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet run /seed
 RUN dotnet publish --no-restore -c Release -o /app
+RUN mv AspIdUsers.db /app/
 
 
 FROM build as publish
