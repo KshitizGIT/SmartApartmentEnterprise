@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +9,7 @@ using PropertyManagement.API.Data;
 using PropertyManagement.API.Extensions;
 using PropertyManagement.SearchProviders.ElasticSearch;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace PropertyManagement.API
@@ -56,7 +56,12 @@ namespace PropertyManagement.API
                 option.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
             });
 
-            services.AddSwagger();
+            services.AddSwagger(f =>
+            {
+                f.AuthorizationUrl = new Uri($"{Configuration["AUTH_URL"]}/connect/authorize");
+                f.TokenUrl = new Uri($"{Configuration["AUTH_URL"]}/connect/token");
+                f.Scopes = new Dictionary<string, string> { { "Property.API", "Access Property APIs" } };
+            });
 
             services.AddTaskRunnerHost(t =>
                         t.ThreadCount = Convert.ToInt32(Configuration["TaskRunnerThreadCount"] ?? "2")

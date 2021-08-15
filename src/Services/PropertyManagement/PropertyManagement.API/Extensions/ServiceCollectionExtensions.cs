@@ -3,7 +3,6 @@ using Microsoft.OpenApi.Models;
 using PropertyManagement.API.BackgroundTasks;
 using PropertyManagement.API.Options;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -11,9 +10,11 @@ namespace PropertyManagement.API.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSwagger(this IServiceCollection services)
+        public static IServiceCollection AddSwagger(this IServiceCollection services, Action<OpenApiOAuthFlow> options)
         {
 
+            var option = new OpenApiOAuthFlow();
+            options?.Invoke(option);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -26,12 +27,7 @@ namespace PropertyManagement.API.Extensions
                     Type = SecuritySchemeType.OAuth2,
                     Flows = new OpenApiOAuthFlows()
                     {
-                        ClientCredentials = new OpenApiOAuthFlow()
-                        {
-                            AuthorizationUrl = new Uri("http://localhost:500/connect/authorize"),
-                            TokenUrl = new Uri("http://localhost:5000/connect/token"),
-                            Scopes = new Dictionary<string, string> { { "Property.API", "Access Property APIs" }, }
-                        }
+                        ClientCredentials = option
                     }
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement { { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" } }, new[] { "Property.API" } } });
