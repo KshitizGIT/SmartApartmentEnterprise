@@ -5,7 +5,7 @@ namespace PropertyManagement.API.Extensions
 {
 
     /// <summary>
-    /// Helper extension class that facilates mapping between and from DTOs
+    /// Helper extension class that facilates mapping between to and from DTOs
     /// </summary>
     public static class MappingExtensions
     {

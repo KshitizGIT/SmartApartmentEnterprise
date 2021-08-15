@@ -30,9 +30,9 @@ namespace PropertyManagement.API.BackgroundTasks
             //Fetching all the property ids in the file to query existing dataset.
             var ids = records.Select(s => s.Id).ToList();
 
-            // This dictionary will contain all distinct properties that imported from file. Its value will
+            // This dictionary's key will contain all distinct properties that was imported from file. It's value will
             // denote whether it is a new property or existing one.
-            // Set all records to be non existent at first.
+            // Initially, set all properties as non existent.
             Dictionary<Property, bool> propertyExistenceHash = records.ToDictionary(s => s, d => false);
 
             // Get properties in file that are already persisted in the database
@@ -43,6 +43,8 @@ namespace PropertyManagement.API.BackgroundTasks
             {
                 //Update the existing records with the values from file.
                 var newProperty = records.First(r => r.Id.Equals(record.Id));
+
+                //Make changes to existing records. If values, are altered, it will be tracked by EFCore
                 UpdateExisitingProperty(newProperty, record);
 
                 // Set properties as already existed.
@@ -74,17 +76,24 @@ namespace PropertyManagement.API.BackgroundTasks
             {
                 await context.Mediator.Send(new PropertiesCreatedEvent(recordsToCreate));
             }
+
             //Raise PropertiesUpdatedEvent
             if (updatedEntries != null && updatedEntries.Count > 0)
             {
                 await context.Mediator.Send(new PropertiesUpdatedEvent(updatedEntries));
             }
+
+            //Raise PropertiesDeletedEvent
             if (recordsToDelete != null && recordsToDelete.Count > 0)
             {
-                //Raise PropertiesDeletedEvent
                 await context.Mediator.Send(new PropertiesDeletedEvent(recordsToDelete));
             }
         }
+
+        /// <summary>
+        /// Updates existing persisted record with the record from the import file.
+        /// Changes will be detected by EFCore as the entities are tracked.
+        /// </summary>
         private void UpdateExisitingProperty(Property newProperty, Property existingProperty)
         {
             existingProperty.Market = newProperty.Market;

@@ -14,9 +14,11 @@ namespace PropertyManagement.SearchProviders.ElasticSearch
         {
             var options = new ElasticSearchOptions();
             elasticSearchOptions?.Invoke(options);
+
             var settings = new ConnectionSettings(new Uri(options.EndpointUrl)).DefaultIndex(options.SearchIndexName);
             var client = new ElasticClient(settings);
             CreateSearchIndex(client, options.SearchIndexName);
+
             // Adding as singleton as recommended by docs.
             // See: https://www.elastic.co/guide/en/elasticsearch/client/net-api/current/lifetimes.html
             collection.AddSingleton<IElasticClient>(client);
@@ -24,6 +26,8 @@ namespace PropertyManagement.SearchProviders.ElasticSearch
             collection.AddHealthChecks().AddCheck("elastic-search-check", new ElasticSearchHealthCheck(client),
                 HealthStatus.Unhealthy,
                 tags: new string[] { "elasticsearch" });
+
+
             collection.AddMediatR(typeof(ServiceCollectionExtensions));
             return collection;
         }
