@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  smartapartmententerprise:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "80"
+      - "44358:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  propertymanagement:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - AUTH_URL=http://host.docker.internal:5000
+      - AUTH_URL_CLIENT=https://localhost:5001
+      - ELASTICSEARCH_URL=https://search-smart-apartment-enterprise-evh576by5resytc6aipt7x6ure.us-east-1.es.amazonaws.com
+      - WEBAPP_URL=https://localhost:44358
+    ports:
+      - "80"
+      - "44309:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    #depends_on:
+    #    - elasticsearch
+
+  identity:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - PROPERTYMANAGEMENTSWAGGERCLIENT=https://localhost:44309
+      - PROPERTYMANAGEMENT_URL=http://propertymanagement
+      - WEBAPP_URL=https://localhost:44358
+    ports:
+      - "5000:80"
+      - "5001:443"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
