@@ -15,7 +15,6 @@ namespace PropertyManagement.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://localhost:44308", "https://localhost:44309");
                 });
     }
 }
