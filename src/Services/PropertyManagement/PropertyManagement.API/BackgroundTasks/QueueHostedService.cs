@@ -27,7 +27,7 @@ namespace PropertyManagement.API.BackgroundTasks
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation( $"Queued Hosted Service is running.{Environment.NewLine}");
+            _logger.LogInformation($"Queued Hosted Service is running.{Environment.NewLine}");
 
             await BackgroundProcessing(stoppingToken);
         }
@@ -43,11 +43,13 @@ namespace PropertyManagement.API.BackgroundTasks
                     using var scope = _serviceProvider.CreateScope();
                     var dbContext = scope.ServiceProvider.GetRequiredService<SmartApartmentDbContext>();
                     var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<ImportTask>>();
 
                     var context = new ImportTaskContext()
                     {
                         DbContext = dbContext,
-                        Mediator = mediator
+                        Mediator = mediator,
+                        Logger = logger
                     };
 
                     await workItem.RunAsync(context);

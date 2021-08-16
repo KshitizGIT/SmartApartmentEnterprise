@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 using PropertyManagement.API.BackgroundTasks;
 using PropertyManagement.API.Data;
 using PropertyManagement.API.Responses;
@@ -22,12 +23,15 @@ namespace PropertyManagement.API.Controllers
     {
         private readonly IPropertyImportBackgroundTaskQueue _taskQueue;
         private readonly SmartApartmentDbContext _context;
+        private readonly ILogger _logger;
 
         public DataExchangeController(IPropertyImportBackgroundTaskQueue taskQueue,
-            SmartApartmentDbContext context)
+            SmartApartmentDbContext context,
+            ILogger<DataExchangeController> logger)
         {
             _taskQueue = taskQueue;
             _context = context;
+            _logger = logger;
         }
 
         /// <summary>
@@ -46,6 +50,7 @@ namespace PropertyManagement.API.Controllers
 
             // Saving the IFormFile to a local file to be used later
             var filePath = Path.GetTempFileName();
+            _logger.LogInformation($"Saving import file to {filePath}");
             using var fileStream = System.IO.File.Create(filePath);
             await propertyFile.CopyToAsync(fileStream);
 
@@ -55,6 +60,7 @@ namespace PropertyManagement.API.Controllers
             await _context.TaskDetails.AddAsync(task.TaskDetails, token);
             await _context.SaveChangesAsync(token);
             //Queue the task
+            _logger.LogInformation($"Adding Import Property Task: '{task.Id}' to queue.");
             await _taskQueue.QueueBackgroundWorkItemAsync(task);
 
             var statusUrl = Url.Action("Index", "Tasks", new { taskId = task.Id });
@@ -81,6 +87,7 @@ namespace PropertyManagement.API.Controllers
             }
             // Saving the IFormFile to a local file to be used later
             var filePath = Path.GetTempFileName();
+            _logger.LogInformation($"Saving import file to {filePath}");
             using var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.Write);
             await managementFile.CopyToAsync(fileStream);
 
@@ -90,6 +97,8 @@ namespace PropertyManagement.API.Controllers
             await _context.SaveChangesAsync();
 
             // Queue the task
+
+            _logger.LogInformation($"Adding Import ManagementCompany Task: '{task.Id}' to queue.");
             await _taskQueue.QueueBackgroundWorkItemAsync(task);
             var statusUrl = Url.Action("Index", "Tasks", new { taskId = task.Id });
             return Accepted(statusUrl,

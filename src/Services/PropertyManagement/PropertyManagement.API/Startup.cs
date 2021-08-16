@@ -58,8 +58,8 @@ namespace PropertyManagement.API
 
             services.AddSwagger(f =>
             {
-                f.AuthorizationUrl = new Uri($"{Configuration["AUTH_URL"]}/connect/authorize");
-                f.TokenUrl = new Uri($"{Configuration["AUTH_URL"]}/connect/token");
+                f.AuthorizationUrl = new Uri($"{Configuration["AUTH_URL_CLIENT"]}/connect/authorize");
+                f.TokenUrl = new Uri($"{Configuration["AUTH_URL_CLIENT"]}/connect/token");
                 f.Scopes = new Dictionary<string, string> { { "Property.API", "Access Property APIs" } };
             });
 

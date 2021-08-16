@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using PropertyManagement.API.Data;
 
 namespace PropertyManagement.API.BackgroundTasks
@@ -7,5 +8,6 @@ namespace PropertyManagement.API.BackgroundTasks
     {
         public SmartApartmentDbContext DbContext { get; set; }
         public IMediator Mediator { get; set; }
+        public ILogger Logger { get; set; }
     }
 }

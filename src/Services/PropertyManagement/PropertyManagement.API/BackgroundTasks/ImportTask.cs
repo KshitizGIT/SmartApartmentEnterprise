@@ -1,4 +1,5 @@
-﻿using PropertyManagement.Infrastructure.Models;
+﻿using Microsoft.Extensions.Logging;
+using PropertyManagement.Infrastructure.Models;
 using System;
 using System.Threading.Tasks;
 using TaskStatus = PropertyManagement.Infrastructure.Models.TaskStatus;
@@ -20,22 +21,26 @@ namespace PropertyManagement.API.BackgroundTasks
 
         public Guid Id { get; }
         public string FilePath { get; }
+        public string Type { get { return this.GetType().FullName; } }
         public async Task RunAsync(ImportTaskContext context)
         {
-            //Reload task details as runasync executes in a different thread than it was created on.
+            //Reload task details as RunAsync executes in a different thread than it was created on.
             TaskDetails = await context.DbContext.TaskDetails.FindAsync(TaskDetails.Id);
 
             try
             {
+                context.Logger.LogInformation($"Running {Type} with Id: {Id}");
                 await MarkAsInProgress(context);
 
                 await ConcreteRunAsync(context);
 
                 await MarkAsSuccess(context);
+                context.Logger.LogInformation($"Successfully completed {Type} with Id: {Id}");
             }
             catch (Exception ex)
             {
                 await FlagAsFailure(context, ex.Message);
+                context.Logger.LogError(ex, $"Failed running {Type} with Id: {Id}");
             }
 
         }
@@ -48,7 +53,7 @@ namespace PropertyManagement.API.BackgroundTasks
                 Created = DateTime.Now,
                 Id = Id,
                 Status = TaskStatus.Pending,
-                Type = this.GetType().FullName,
+                Type = Type,
                 Updated = DateTime.Now
             };
 

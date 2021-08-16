@@ -19,6 +19,8 @@ WORKDIR /src
 COPY ["SmartApartmentEnterprise.sln", "SmartApartmentEnterprise.sln"]
 COPY ["Services/Identity/Identity.API/Identity.API.csproj", "Services/Identity/Identity.API/Identity.API.csproj"]
 COPY ["Services/PropertyManagement/PropertyManagement.API/PropertyManagement.API.csproj", "Services/PropertyManagement/PropertyManagement.API/PropertyManagement.API.csproj"]
+COPY ["Services/PropertyManagement/PropertyManagement.Infrastructure/PropertyManagement.Infrastructure.csproj", "Services/PropertyManagement/PropertyManagement.Infrastructure/PropertyManagement.Infrastructure.csproj"]
+COPY ["Services/PropertyManagement/SearchProviders.ElasticSearch/SearchProviders.ElasticSearch.csproj", "Services/PropertyManagement/SearchProviders.ElasticSearch/SearchProviders.ElasticSearch.csproj"]
 COPY ["Web/SmartApartmentEnterprise.SPA/SmartApartmentEnterprise.SPA.csproj", "Web/SmartApartmentEnterprise.SPA/SmartApartmentEnterprise.SPA.csproj"]
 COPY ["docker-compose.dcproj", "docker-compose.dcproj"]
 
@@ -27,6 +29,7 @@ COPY . .
 
 WORKDIR "/src/Web/SmartApartmentEnterprise.SPA"
 RUN dotnet publish --no-restore -c Release -o /app
+RUN cp -r ClientApp /app
 FROM build as publish
 
 FROM base AS final
