@@ -99,7 +99,7 @@ To create containers and run the app,
  docker compose up
 ```
 
-In case you don't want the docker elastic service and want to use my AWS Elastic Service, use the following command.
+In case you don't want the docker elastic service and want to use my AWS Elastic Service, use the following command. Currently, access to my AWS Elastic Service is protected by calls from selected IP Address. Please send me your ip address so that I can configure access.
 ```bash
 cd src
 docker compose -f .\docker-compose.yml -f .\docker-compose.aws.yml up
