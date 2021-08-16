@@ -10,7 +10,8 @@ This project uses a implementation of the microservices architecture, with usage
 
 ### 1.  Identity Microservice
 This was built via the [IdentityServer4](https://identityserver4.readthedocs.io/en/latest/) template as a central logic and auth workflow. 
-    
+![](assets/identity.jpg)
+
 #### Responsibilities
 
 - All API's exposed by `PropertyManagement.API` requires  authenticated access. This microservice has been registered as the authority for issuing, validating the Json Web Token (JWT) used in the `PropertyManagement.API` microservice.  
@@ -48,3 +49,30 @@ This is just a Web Application created by the Angular + .NET Core template. Chec
 
 #### Defaults
 - Run on https://localhost:44358
+
+
+## Running the application
+
+After you download or clone the repository, you can run the application in these ways
+
+### 1. Use visual studio to run each project one by one in the following order.
+
+- Identity.API
+
+     You will need to install dotnet-ef to seed the database with users. Use these commands to seed the database.
+     ```
+     dotnet tool install --global dotnet-ef
+     cd src\Services\Identity\Identity.API
+     dotnet run /seed
+     ```
+- PropertyManagment.API
+    To initialize the db, use the following command
+    ```
+    dotnet tool install --global dotnet-ef
+    cd src\Services\PropertyManagement\PropertyManagement.API
+    dotnet ef database update
+    ```
+- SmartApartmentEnterprise.SPA
+    Make sure node is installed.
+
+ 
