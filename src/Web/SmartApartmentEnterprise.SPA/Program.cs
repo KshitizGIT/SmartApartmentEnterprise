@@ -15,6 +15,7 @@ namespace SmartApartmentEnterprise.SPA
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://localhost:44357", "https://localhost:44358");
                 });
     }
 }
