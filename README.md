@@ -91,7 +91,8 @@ To create containers and run the app,
 
 ```bash
  cd src
- # only create the elastic search container. This needs to run before PropertyManagement.API as indexes are created during start of PropertyManagement.API.
+ # only create the elastic search container. This needs to run before 
+ # PropertyManagement.API as indexes are created during start of PropertyManagement.API.
  docker compose up -d elasticservice
  
  # After elastic search container is functional, run all other services.
@@ -103,3 +104,13 @@ In case you don't want the docker elastic service and want to use my AWS Elastic
 cd src
 docker compose -f .\docker-compose.yml -f .\docker-compose.aws.yml up
 ```
+
+## Further development
+
+Even though, the assessement is complete, we can add many more functionalities easily that compliments this modern architecture. However, this cannot be accomplished in a 1 week time frame. These are the few functionalities I had considered...
+- API Gateway using Ocelot
+- Use Message Queues like RabbitMQ or AWS SQS for asynchronous messaging.
+- Centralized logging using Serilog
+- Automated Tests
+- Mobile Client using .NET MAUI for Search
+- Github Actions for CI/CD
