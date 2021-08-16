@@ -66,6 +66,7 @@ After you download or clone the repository, you can run the application in these
      dotnet run /seed
      ```
 - PropertyManagment.API
+
     To initialize the db, use the following command
     ```
     dotnet tool install --global dotnet-ef
@@ -73,6 +74,32 @@ After you download or clone the repository, you can run the application in these
     dotnet ef database update
     ```
 - SmartApartmentEnterprise.SPA
+
     Make sure node is installed.
 
+### 2. Use docker compose to run the app. 
+
+If you have docker installed, you can use docker compose to run the application. You can also use Visual Studio to run the docker compose project.
+
+To build the docker images use the following command.
+```bash
+cd src
+docker compose build
+```
+
+To create containers and run the app, 
+
+```bash
+ cd src
+ # only create the elastic search container. This needs to run before PropertyManagement.API as indexes are created during start of PropertyManagement.API.
+ docker compose up -d elasticservice
  
+ # After elastic search container is functional, run all other services.
+ docker compose up
+```
+
+In case you don't want the docker elastic service and want to use my AWS Elastic Service, use the following command.
+```bash
+cd src
+docker compose -f .\docker-compose.yml -f .\docker-compose.aws.yml up
+```
